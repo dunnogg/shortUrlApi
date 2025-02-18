@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Ip, Param, Post, Res} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Ip, Param, Post, Req, Res} from '@nestjs/common';
 import { Response } from 'express';
 import {shortUrlService} from "./shortUrl.service";
 
@@ -7,13 +7,15 @@ export class shortUrlController {
     constructor(private readonly urlService: shortUrlService) {}
 
     @Post('shorten')
-    async create(@Body('originalUrl') originalUrl: string, @Body('alias') alias?: string, @Body('expiresAt') expiresAt?: Date) {
+    async create(@Body('originalUrl') originalUrl: string, @Body('alias') alias?: string, @Body('expiresAt') expiresAt?: Number) {
         return this.urlService.create(originalUrl, alias, expiresAt);
     }
 
     @Get(':shortUrl')
-    async redirect(@Param('shortUrl') shortUrl: string, @Ip() ip: string, @Res() res: Response) {
-        const originalUrl = await this.urlService.redirect(shortUrl, ip);
+    async redirect(@Param('shortUrl') shortUrl: string, @Req() req: Request, @Res() res: Response) {
+        const userIp = req.headers['x-forwarded-for'];
+
+        const originalUrl = await this.urlService.redirect(shortUrl, String(userIp));
         return res.redirect(originalUrl);
     }
 

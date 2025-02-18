@@ -18,7 +18,7 @@ describe('UrlController', () => {
     it('/POST shorten should create a short URL', () => {
         return request(app.getHttpServer())
             .post('/shorten')
-            .send({ originalUrl: 'https://example.com' })
+            .send({ originalUrl: 'https://youtube.com' })
             .expect(201)
             .expect((res) => {
                 expect(res.body).toHaveProperty('shortUrl');

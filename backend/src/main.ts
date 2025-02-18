@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {
+        cors: {
+            origin: '*',
+        }
+    });
   const options = new DocumentBuilder()
-      .setTitle('Mining Odyssey API')
-      .setVersion('7')
+      .setTitle('Short Url API')
+      .setVersion('1')
       .addServer('/', 'Local environment')
       .build();
   const document = SwaggerModule.createDocument(app, options);
